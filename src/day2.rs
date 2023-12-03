@@ -1,4 +1,16 @@
+use std::str::FromStr;
 use regex::Regex;
+
+#[derive(Debug, PartialEq, Eq)]
+struct ParseGameError;
+
+#[derive(Debug, PartialEq, Eq)]
+struct ParseGameSetError;
+
+struct Game {
+    pub sets: Vec<GameSet>,
+    pub id: u32,
+}
 
 struct GameSet {
     pub red: u32,
@@ -6,9 +18,39 @@ struct GameSet {
     pub green: u32,
 }
 
-struct Game {
-    pub sets: Vec<GameSet>,
-    pub id: u32,
+impl FromStr for GameSet
+{
+    type Err = ParseGameSetError;
+
+    fn from_str(set: &str) -> Result<Self, Self::Err> {
+        let pattern = r"(?P<redGroup>\d+ red)|(?P<greenGroup>\d+ green)|(?P<blueGroup>\d+ blue)";
+        let re = Regex::new(pattern).unwrap();
+        let mut result = GameSet {
+            red: 0,
+            blue: 0,
+            green: 0,
+        };
+
+        let group_names: Vec<&str> = re.capture_names().skip(1).map(|x| x.unwrap()).collect();
+
+        for caps in re.captures_iter(set) {
+            for name in &group_names {
+                if let Some(m) = caps.name(name) {
+                    let digit_ends = m.as_str().find(' ').unwrap();
+                    let value = m.as_str()[..digit_ends].parse::<u32>().unwrap();
+
+                    match name {
+                        &"greenGroup" => result.green = value,
+                        &"blueGroup" => result.blue = value,
+                        &"redGroup" => result.red = value,
+                        _ => panic!("Unknown color group {name}"),
+                    }
+                }
+            }
+        }
+
+        Ok(result)
+    }
 }
 
 impl Game {
@@ -17,6 +59,22 @@ impl Game {
             .sets
             .iter()
             .any(|set| set.blue > blue || set.red > red || set.green > green)
+    }
+}
+
+impl FromStr for Game {
+    type Err = ParseGameError;
+
+    fn from_str(input: &str) -> Result<Self, Self::Err> {
+        let bound = input.find(':').unwrap();
+
+        Ok(Game {
+            id: input[5..bound].parse::<u32>().unwrap(),
+            sets: get_game_sets_str(input)
+                .iter()
+                .map(|set| GameSet::from_str(set).unwrap())
+                .collect::<Vec<GameSet>>(),
+        })
     }
 }
 
@@ -46,17 +104,7 @@ fn get_games(input: &str) -> Vec<Game> {
 
     games_str
         .iter()
-        .map(|game| {
-            let bound = game.find(':').unwrap();
-
-            Game {
-                id: game[5..bound].parse::<u32>().unwrap(),
-                sets: get_game_sets_str(game)
-                    .iter()
-                    .map(|set| get_set_values(set))
-                    .collect::<Vec<GameSet>>(),
-            }
-        })
+        .map(|game| Game::from_str(game).unwrap())
         .collect::<Vec<Game>>()
 }
 
@@ -67,36 +115,6 @@ fn get_game_sets_str(game: &str) -> Vec<&str> {
     sets
 }
 
-fn get_set_values(set: &str) -> GameSet {
-    let pattern = r"(?P<redGroup>\d+ red)|(?P<greenGroup>\d+ green)|(?P<blueGroup>\d+ blue)";
-    let re = Regex::new(pattern).unwrap();
-    let mut result = GameSet {
-        red: 0,
-        blue: 0,
-        green: 0,
-    };
-
-    let group_names: Vec<&str> = re.capture_names().skip(1).map(|x| x.unwrap()).collect();
-
-    for caps in re.captures_iter(set) {
-        for name in &group_names {
-            if let Some(m) = caps.name(name) {
-                let digit_ends = m.as_str().find(' ').unwrap();
-                let value = m.as_str()[..digit_ends].parse::<u32>().unwrap();
-
-                match name {
-                    &"greenGroup" => result.green = value,
-                    &"blueGroup" => result.blue = value,
-                    &"redGroup" => result.red = value,
-                    _ => panic!("Unknown color group {name}"),
-                }
-            }
-        }
-    }
-
-    result
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -104,7 +122,7 @@ mod tests {
     #[test]
     fn test_get_game_set() {
         let line = "3 blue, 4 red";
-        let game_set = get_set_values(line);
+        let game_set = GameSet::from_str(line).unwrap();
         assert_eq!(game_set.blue, 3);
         assert_eq!(game_set.red, 4);
         assert_eq!(game_set.green, 0);
