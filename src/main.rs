@@ -3,6 +3,7 @@ use std::io::Read;
 
 mod day1;
 mod day2;
+mod day3;
 
 fn solve_day1() {
     let mut file = File::open("day1.txt").unwrap();
@@ -27,7 +28,19 @@ fn solve_day2() {
     println!("Day2 power: {value_power}");
 }
 
+fn solve_day3() {
+    let mut file = File::open("day3.txt").unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+
+    let answer = day3::get_final_value(contents.as_str());
+    let answer2 = day3::get_gears_value(contents.as_str());
+    println!("Day3: {answer}");
+    println!("Day3 Gears: {answer2}");
+}
+
 fn main() {
-    solve_day1();
-    solve_day2();
+    //solve_day1();
+    //solve_day2();
+    solve_day3();
 }
