@@ -59,7 +59,7 @@ fn solve_day6() {
     file.read_to_string(&mut contents).unwrap();
 
     let answer = day6::get_wins_product(contents.as_str());
-    let answer2 = day6::get_wins_product_2(contents.as_str());
+    let answer2 = day6::get_possible_wins_single(contents.as_str());
     println!("Day6: {answer}");
     println!("Day6 bonus: {answer2}");
 }
