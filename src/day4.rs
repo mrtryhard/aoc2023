@@ -9,7 +9,7 @@ pub fn solve_bonus_total_scratchcards(input: &str) -> u32 {
     // Vector of winnings
     //      [card 1, card 2, ...]
     // e.g. [     4,      2, ...]
-    let mut wins_per_card = cards.iter().map(calculate_times_won_card).collect::<Vec<u32>>();
+    let wins_per_card = cards.iter().map(calculate_times_won_card).collect::<Vec<u32>>();
     let mut cards_count = Vec::<u32>::new();
     cards_count.resize(cards.len(), 1); // 1 card each
 

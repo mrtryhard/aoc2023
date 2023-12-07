@@ -5,6 +5,8 @@ mod day1;
 mod day2;
 mod day3;
 mod day4;
+//mod day5;
+mod day6;
 
 fn solve_day1() {
     let mut file = File::open("day1.txt").unwrap();
@@ -51,9 +53,21 @@ fn solve_day4() {
     println!("Day4 cards: {answer2}");
 }
 
+fn solve_day6() {
+    let mut file = File::open("day6.txt").unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+
+    let answer = day6::get_wins_product(contents.as_str());
+    let answer2 = day6::get_wins_product_2(contents.as_str());
+    println!("Day6: {answer}");
+    println!("Day6 bonus: {answer2}");
+}
+
 fn main() {
     //solve_day1();
     //solve_day2();
     //solve_day3();
-    solve_day4();
+    //solve_day4();
+    solve_day6();
 }
