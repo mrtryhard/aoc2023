@@ -36,12 +36,9 @@ pub fn get_wins_product(input: &str) -> u64 {
     let (times, distances) = parse_record_entry(input);
     assert_eq!(times.len(), distances.len());
 
-    let mut product = 1;
-    for idx in 0..times.len() {
-        product *= possible_wins_for_record(distances[idx] as u64, times[idx] as u64);
-    }
-
-    product
+    (0..times.len())
+        .map(|idx| possible_wins_for_record(distances[idx] as u64, times[idx] as u64))
+        .product()
 }
 
 pub fn get_possible_wins_single(input: &str) -> u64 {
