@@ -84,32 +84,6 @@ impl Map {
     }
 }
 
-impl<'a> MapIterator<'a> {
-    fn next_unbound(&mut self) -> (&'a Node, bool) {
-        let result_node = self.nodes.get(self.current_node.unwrap_or(0));
-
-        match self
-            .pattern
-            .chars()
-            .nth(self.current_pattern_index)
-            .unwrap()
-        {
-            'R' => self.current_node = result_node.unwrap().right,
-            _ => self.current_node = result_node.unwrap().left,
-        }
-
-        if self.current_pattern_index == self.pattern.len() - 1 {
-            self.current_pattern_index = 0;
-        } else {
-            self.current_pattern_index += 1;
-        }
-
-        let end = result_node.unwrap().id.ends_with("Z");
-
-        (result_node.unwrap(), end)
-    }
-}
-
 impl<'a> Iterator for MapIterator<'a> {
     type Item = &'a Node;
 

@@ -8,7 +8,7 @@ mod day4;
 //mod day5;
 mod day6;
 mod day8;
-mod day7;
+//mod day7;
 
 fn solve_day1() {
     let mut file = File::open("day1.txt").unwrap();
