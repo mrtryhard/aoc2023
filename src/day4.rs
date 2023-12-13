@@ -9,18 +9,24 @@ pub fn solve_bonus_total_scratchcards(input: &str) -> u32 {
     // Vector of winnings
     //      [card 1, card 2, ...]
     // e.g. [     4,      2, ...]
-    let wins_per_card = cards.iter().map(calculate_times_won_card).collect::<Vec<u32>>();
+    let wins_per_card = cards
+        .iter()
+        .map(calculate_times_won_card)
+        .collect::<Vec<u32>>();
     let mut cards_count = Vec::<u32>::new();
     cards_count.resize(cards.len(), 1); // 1 card each
 
     // Process per card and changes the amount per card.
-    wins_per_card.iter().enumerate().for_each(|(idx, numbers_won)| {
-        // Update the next cards count
-        let bound = *numbers_won as usize;
-        for update_idx in 0..bound  {
-            cards_count[idx + 1 + update_idx] +=  cards_count[idx];
-        }
-    });
+    wins_per_card
+        .iter()
+        .enumerate()
+        .for_each(|(idx, numbers_won)| {
+            // Update the next cards count
+            let bound = *numbers_won as usize;
+            for update_idx in 0..bound {
+                cards_count[idx + 1 + update_idx] += cards_count[idx];
+            }
+        });
 
     cards_count.iter().sum()
 }

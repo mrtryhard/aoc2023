@@ -7,6 +7,8 @@ mod day3;
 mod day4;
 //mod day5;
 mod day6;
+mod day8;
+mod day7;
 
 fn solve_day1() {
     let mut file = File::open("day1.txt").unwrap();
@@ -64,10 +66,22 @@ fn solve_day6() {
     println!("Day6 bonus: {answer2}");
 }
 
+fn solve_day8() {
+    let mut file = File::open("day8.txt").unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+
+    let answer = day8::solve1(contents.as_str());
+    let answer2 = day8::solve2(contents.as_str());
+    println!("Day8: {answer}");
+    println!("Day8 bonus: {answer2}");
+}
+
 fn main() {
     //solve_day1();
     //solve_day2();
     //solve_day3();
     //solve_day4();
-    solve_day6();
+    //solve_day6();
+    solve_day8();
 }

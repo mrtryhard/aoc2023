@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use regex::Regex;
+use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Eq)]
 struct ParseGameError;
@@ -18,8 +18,7 @@ struct GameSet {
     pub green: u32,
 }
 
-impl FromStr for GameSet
-{
+impl FromStr for GameSet {
     type Err = ParseGameSetError;
 
     fn from_str(set: &str) -> Result<Self, Self::Err> {
